@@ -2,7 +2,6 @@
 
 SG_ID="sg-00d129afc92780fa5"
 AMI_ID="ami-0220d79f3f480ecf5"
-set -x
 
       # to create new instance for given instance loop of for eg mangodb
 for instance in $@
@@ -22,16 +21,16 @@ done
 # GET private and public ID based on instance type. if it is "frontend" then we need pub ip else we need
 # private ips
 
-if [ $INSTANCE_ID="frontend" ]; then # get public IP
-   IP=$(aws ec2 describe-instances \
+if [ $INSTANCE_ID == "frontend" ]; then
+   IP=$( aws ec2 describe-instances \
     --instance-ids "$INSTANCE_ID" \
     --query 'Reservations[].Instances[0].PublicIpAddress' \
-    --output text)
+    --output text )
 else
-    IP=$(aws ec2 describe-instances \    # get private IP
+    IP=$( aws ec2 describe-instances \
     --instance-ids "$INSTANCE_ID" \
     --query 'Reservations[].Instances[].PrivateIpAddress' \
-    --output text)
+    --output text )
 fi
 
 echo "IP ID is :$IP"
