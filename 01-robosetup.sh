@@ -8,8 +8,7 @@ for instance in $@
 do
    INSTANCE_ID=$(aws ec2 run-instances \       # to create new instance for given instance loop of for eg mangodb
     --image-id $AMI_ID \        # Replace with a valid AMI_ID in your region
-    --count 1 \
-    --instance-type t3.micro \
+    --instance-type "t3.micro" \
     --security-group-ids $SG_ID \ # Replace with your security group ID
     --associate-public-ip-address \
     --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$instance}]" \
