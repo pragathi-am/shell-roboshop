@@ -4,14 +4,14 @@ SG_ID="sg-00d129afc92780fa5"
 AMI_ID="ami-0220d79f3f480ecf5"
 set -x
 
-
+      # to create new instance for given instance loop of for eg mangodb
 for instance in $@
 do
    INSTANCE_ID=$(
-    aws ec2 run-instances \      # to create new instance for given instance loop of for eg mangodb
-    --image-id $AMI_ID \        # Replace with a valid AMI_ID in your region
+    aws ec2 run-instances \
+    --image-id $AMI_ID \
     --instance-type "t3.micro" \
-    --security-group-ids $SG_ID \ # Replace with your security group ID
+    --security-group-ids $SG_ID \
     --associate-public-ip-address \
     --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$instance}]" \
     --query 'Instances[0].InstanceId' \
