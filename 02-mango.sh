@@ -44,21 +44,3 @@ validate $? "allowing remote connections "
 
 systemctl restart mongod
 validate $? "restart mangod"
-
-
-echo " installing ngnix"
-dnf install nginx -y &>> $LOGS_FILE    # store command output to logfile
-
-# call validate function here after installation by passing args exitcode $? and pkgname
-
-validate $? "nginx"
-
-echo " installing mysql"
-dnf install mysql -y &>> $LOGS_FILE
-
-validate $? "mysql"
-
-echo " installing nodejs"
-dnf install nodejs -y &>> $LOGS_FILE
-
-validate $? "nodejs"
