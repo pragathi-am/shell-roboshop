@@ -61,7 +61,6 @@ validate $? "removing existing content"
 unzip /tmp/catalogue.zip
 validate $? "unzipping to app folder "
 
-cd /app 
 npm install &>>$LOGS_FILE
 validate $? "istall npm"
 
@@ -69,15 +68,15 @@ cp  $SCRIPT_DIR/catalogue.service  /etc/systemd/system/catalogue.service
 validate $? "copying catalogue.service to system dir"
 
 systemctl daemon-reload
-systemctl enable catalogue 
+systemctl enable catalogue &>>$LOGS_FILE
 systemctl start catalogue
 validate $? "enable and start systemctl"
 
 cp $SCRIPT_DIR/mango.repo /etc/yum.repos.d/mongo.repo
 validate $? "Copying mango.repo to etc"
 
-dnf install mongodb-mongosh -y
+dnf install mongodb-mongosh -y &>>$LOGS_FILE
 validate $? "installing mangodb client"
 
-mongosh --host $MONGODB_HOST </app/db/master-data.js
+mongosh --host $MANGODB_HOST </app/db/master-data.js
 validate $? "loading mangodb"
