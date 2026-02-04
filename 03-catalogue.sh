@@ -12,7 +12,6 @@ N="\e[0m"  # no color
 
 if [ $userid -ne 0 ]; then
    echo " please run with sudo user" | tee -a $LOGS_FILE  # tee writes screen output to log file by apend mode
-   
    exit 1
 fi
 mkdir -p $LOGS_FOLDER
@@ -27,20 +26,23 @@ validate() {
   fi   
 }
 
-cp mango.repo /etc/yum.repos.d/mongo.repo
-validate $? "copying Mango Repo"
+dnf module list nodejs
+validate $? "list all nodejs"
 
-dnf install mongodb-org -y &>>$LOGS_FILE
-validate $? "Installing Mangodb "
+dnf module disable nodejs -y &>>$LOGS_FILE
+validate $? "diable nodejs "
 
-systemctl enable mongod &>>$LOGS_FILE
-validate $? "enable Mangod "
+dnf module enable nodejs:20 -y &>>$LOGS_FILE
+validate $? "enable nodejs "
 
-systemctl start mongod &>>$LOGS_FILE
-validate $? "start Mangod "
+dnf install nodejs -y &>>$LOGS_FILE
+validate $? "install nodejs "
 
-sed -i 's/127.0.0.1/0.0.0.0/g'  /etc/mongod.conf
-validate $? "allowing remote connections "
+useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop
+validate $? "setting up roboshop user "
 
-systemctl restart mongod &>>$LOGS_FILE
-validate $? "restart mangod"
+mkdir /app 
+validate $? "creatin app dir "
+
+curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip 
+validate $? "downloading to temp zip folder "
