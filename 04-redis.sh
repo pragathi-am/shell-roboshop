@@ -11,7 +11,7 @@ Y="\e[33m"
 B="\e[34m"
 N="\e[0m"  # no color
 
-mkdir -p LOGS_FOLDER
+mkdir -p $LOGS_FOLDER
 
 if [ $userid -ne 0 ]; then
    echo " please run with sudo user" | tee -a $LOGS_FILE  # tee writes screen output to log file by apend mode
