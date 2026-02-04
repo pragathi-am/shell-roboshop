@@ -41,7 +41,7 @@ dnf install nodejs -y &>>$LOGS_FILE
 validate $? "install nodejs "
 
 id roboshop &>>$LOGS_FILE
-if [ $? ne 0 ]; then 
+if [ $? -ne 0 ]; then 
      useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop
      validate $? "setting up roboshop system user "
 else
@@ -55,7 +55,7 @@ curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue
 validate $? "downloading to temp zip folder "
 
 cd /app
-rm -rf /app/* &>>>$LOGS_FILE
+rm -rf /app/* &>>$LOGS_FILE
 validate $? "removing existing content"
 
 unzip /tmp/catalogue.zip
