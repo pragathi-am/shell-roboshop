@@ -11,13 +11,15 @@ Y="\e[33m"
 B="\e[34m"
 N="\e[0m"  # no color
 
+mkdir -p LOGS_FOLDER
+
 if [ $userid -ne 0 ]; then
    echo " please run with sudo user" | tee -a $LOGS_FILE  # tee writes screen output to log file by apend mode
    
    exit 1
 fi
 
-mkdir -p LOGS_FOLDER
+
 # this function will not execute by shell. it will execute only when it being called .
 validate() {
   if [ $1 -ne 0 ]; then 
