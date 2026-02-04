@@ -77,6 +77,20 @@ validate $? "Copying mango.repo to etc"
 
 dnf install mongodb-mongosh -y &>>$LOGS_FILE
 validate $? "installing mangodb client"
+# to check database already loaded or not . it retruns value in index format. if -1 means not there.
+# if greater than zero then already data exist
+
+INDEX=$(mongosh --host $MANGODB_HOST --quiet  --eval 'db.getMongo().getDBNames().indexOf("catalogue")')
+if [ $INDEX -lt 0 ]; then
+    mongosh --host $MANGODB_HOST </app/db/master-data.js
+    VALIDATE $? "Loading products"
+else
+    echo -e "Products already loaded ... $Y SKIPPING $N"
+fi
+
 
 mongosh --host $MANGODB_HOST </app/db/master-data.js
 validate $? "loading mangodb"
+
+systemctl restart catalogue
+VALIDATE $? "Restarting catalogue"
