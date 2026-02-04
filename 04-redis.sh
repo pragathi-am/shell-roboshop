@@ -17,6 +17,7 @@ if [ $userid -ne 0 ]; then
    exit 1
 fi
 
+mkdir -p LOGS_FOLDER
 # this function will not execute by shell. it will execute only when it being called .
 validate() {
   if [ $1 -ne 0 ]; then 
