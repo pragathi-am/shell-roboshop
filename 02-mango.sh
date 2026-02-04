@@ -1,4 +1,5 @@
 #!/bin/bash
+#to install mangodb after instance creation 
 
 # to know id of user id . for root user this is always zero
 userid=$(id -u)

@@ -9,6 +9,8 @@ G="\e[32m"
 Y="\e[33m"
 B="\e[34m"
 N="\e[0m"  # no color
+SCRIPT_DIR=$PWD
+MANGODB_HOST="mangodb.daws88sraga.online"
 
 if [ $userid -ne 0 ]; then
    echo " please run with sudo user" | tee -a $LOGS_FILE  # tee writes screen output to log file by apend mode
@@ -26,7 +28,7 @@ validate() {
   fi   
 }
 
-dnf module list nodejs
+dnf module list nodejs &>>$LOGS_FILE
 validate $? "list all nodejs"
 
 dnf module disable nodejs -y &>>$LOGS_FILE
@@ -38,11 +40,44 @@ validate $? "enable nodejs "
 dnf install nodejs -y &>>$LOGS_FILE
 validate $? "install nodejs "
 
-useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop
-validate $? "setting up roboshop user "
+id roboshop &>>$LOGS_FILE
+if [ $? ne 0 ]; then 
+     useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop
+     validate $? "setting up roboshop system user "
+else
+    echo -e "system user already exist. hence $R skipping $N"
+fi
 
-mkdir /app 
+mkdir -p /app 
 validate $? "creatin app dir "
 
 curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip 
 validate $? "downloading to temp zip folder "
+
+cd /app
+rm -rf /app/* &>>>$LOGS_FILE
+validate $? "removing existing content"
+
+unzip /tmp/catalogue.zip
+validate $? "unzipping to app folder "
+
+cd /app 
+npm install &>>>$LOGS_FILE
+validate $? "istall npm"
+
+cp  $SCRIPT_DIR/catalogue.service  /etc/systemd/system/catalogue.service
+validate $? "copying catalogue.service to system dir"
+
+systemctl daemon-reload
+systemctl enable catalogue 
+systemctl start catalogue
+validate $? "enable and start systemctl"
+
+cp $SCRIPT_DIR/mango.repo /etc/yum.repos.d/mongo.repo
+validate $? "Copying mango.repo to etc"
+
+dnf install mongodb-mongosh -y
+validate $? "installing mangodb client"
+
+mongosh --host $MONGODB_HOST </app/db/master-data.js
+validate $? "loading mangodb"
