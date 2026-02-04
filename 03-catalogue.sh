@@ -93,4 +93,4 @@ mongosh --host $MANGODB_HOST </app/db/master-data.js
 validate $? "loading mangodb"
 
 systemctl restart catalogue
-VALIDATE $? "Restarting catalogue"
+validate $? "Restarting catalogue"
